@@ -7,7 +7,7 @@ This is an implementation of it in [Uiua](https://uiua.org)!
 Check out [this website](https://chakazul.github.io/lenia.html) for further
 reading on Lenia. This page also served as my main source of information.
 
-You can find a jupyter notebook called "From Conway to Lenia" on here,
+You can find a jupyter notebook called "From Conway to Lenia" on there,
 which was great to follow along.
 
 Unfortunately, this implementation is not very fast. There is some
