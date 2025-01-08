@@ -13,9 +13,11 @@ WF ← ⊂⊂⊃(↙¯)⊃⋅∘↙
 # world ? kernel world
 ~Conv {K} ⧈(/+♭×K) △K
 
+# σ ? x
+SoftMax ← ÷⤚+1ⁿ⊙e×₋₆
+
 # continuous life like cellular automaton
 ┌─╴Lenia
-  
   # kernel ? R β
   Kernel ← memo(
     ×◡⋅⧻÷⟜(⌵≡₂/ℂ-|⊞⊟.⇡+₁×₂)
@@ -26,7 +28,7 @@ WF ← ⊂⊂⊃(↙¯)⊃⋅∘↙
   # world ? T R μ σ β world
   ~U {T R μ σ β} ↥₀↧₁ +⊸(
       WF R ≡WF R
-      ≡◇(Conv Kernel) R β ¤
+      wait≡pool◇(Conv Kernel) R β ¤
       ÷T ÷⧻⟜/+ ≡(-₁ ×₂ B) μ σ
     )
   
@@ -39,7 +41,7 @@ WF ← ⊂⊂⊃(↙¯)⊃⋅∘↙
   ~U {T R μ σ β} ↥₀↧₁ +⟜(
       ÷T ÷⧻⟜/+ -⌞
     | WF R ≡WF R
-      ≡◇(Conv Kernel) R β ¤
+      wait≡pool◇(Conv Kernel) R β ¤
       ≡B μ σ
     )
   
@@ -57,7 +59,7 @@ WF ← ⊂⊂⊃(↙¯)⊃⋅∘↙
   # world ? T R μ σ β world
   ~U {T R μ σ β ρ H C₀ C₁} ↥₀↧₁ +⟜(
       ⊏C₀ ≡(WF R ≡WF R)
-      ≡◇(Conv Kernel) R ρ β
+      wait≡pool◇(Conv Kernel) R ρ β
       ≡(-₁ ×₂ B) μ σ
       ÷T ⊕/+C₁ ×H
     )
@@ -72,9 +74,9 @@ WF ← ⊂⊂⊃(↙¯)⊃⋅∘↙
   # world ? T R μ σ β world
   ~U {T R μ σ β ρ H C₀ C₁} ↥₀↧₁ +⟜(
       ⨬(-₁⋅×₂|-₁⋅×₂|-)⟜⊏C₁
-      ÷T ⊕/+C₁ ×H 
+      ÷T ⊕/+C₁ ×H
     | ⊏C₀ ≡(WF R ≡WF R)
-      ≡◇(Conv Kernel) R ρ β
+      wait≡pool◇(Conv Kernel) R ρ β
       ≡B μ σ)
   
   ~Sim {f T R μ σ β ρ H C₀ C₁} ⇌[⍥⊸(U T R μ σ β ρ H C₀ C₁)-₁f]
@@ -113,4 +115,4 @@ L ← +⊙×⟜-
 
 # applies colormap and upscales each frame
 # colored ? empty low high grayscale
-D ← ≡(▽⟜≡▽4 C)∩₃¤
+D ← wait≡pool(▽⟜≡▽4 C)∩₃¤
