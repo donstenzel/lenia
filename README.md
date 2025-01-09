@@ -9,10 +9,15 @@ reading on Lenia. This page also served as my main source of information.
 You can find a jupyter notebook called "From Conway to Lenia" on there,
 which was great to follow along.
 
-Unfortunately, this implementation is not very fast. There is some
+~~Unfortunately, this implementation is not very fast. There is some
 optimization involving Fourier Transformation and regular multiplication
 instead of convolution, but I have never used FT before so it's going
-to take a while until I understand it enough.
+to take a while until I understand it enough.~~
+
+I've implemented the fast fourier transform convolution, which is an
+immense upgrade. For reference, my biggest render before took 82 minutes.
+With FFT it only takes ~75s! Maybe I will look into rayua to create some
+live visualizations, since it's a lot more feasable now.
 
 # Showcase 📷
 
@@ -44,6 +49,13 @@ This species also lives in multi-channel Lenia, and manifests in multiple
 different forms.
 
 ![Tesselatium gyrans](visualizations/tesselatium-gyrans.gif)
+
+These renders of Tesselatium gyrans clearly demonstrate that
+creatures in Lenia can possess cohesion and rigidity in their structure.
+Even when meeting one another, they simply bounce. They also show swarm
+behaviour when moving side by side.
+
+![Cohesion](visualizations/cohesion.gif)
 
 # Final words
 I find it truly fascinating to see how complex structures like these can
