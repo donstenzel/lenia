@@ -12,101 +12,20 @@ Plasma ← ÷₂₅₅[[12 8 135]
               [204 71 120]
               [240 249 33]]
 
-# linear interpolation
-# ? a b x
-L ← +⊙×⟜-
-
-# colored ? grayscale colors
-C ← L ∩⌟⊏ ⊙⊙: ⨬(
-  0 1 ×₂
-| 1 2 -₁ ×₂
-)⊸⁅
+# colored ? grayscale colormap
+C ← ⍜-× ⊃(⍜⊟⊏⊃⌊⌈)◿₁ ×-₁◡⋅⧻
 
 # bell ? μ σ x
 B ← ⁿ⊙e¯÷⟜ⁿ2÷𝄐⌞-
 
-┌─╴Slow
-  # pads both ends with n elements of the other end
-  # padded ? n list
-  WF ← ⊂⊂⊃(↙¯)⊃⋅∘↙
-  
-  # world ? kernel world
-  ~Conv {K} ⧈(/+♭×K) △K
-  
-  # continuous life like cellular automaton
-  ┌─╴Lenia
-    # kernel ? R β
-    Kernel ← (
-      ×◡⋅⧻÷⟜(⌵≡₂/ℂ-|⊞⊟.⇡+₁×₂)
-      ××⊃(>⊙⧻|⊏↧⊸⊓⌊(-₁⧻)|B 0.5 0.15 ◿₁)
-      ÷/+⊸♭
-    )
-    
-    # world ? T R μ σ β world
-    ~U {T R μ σ β} ↥₀↧₁ +⊸(
-        WF R ≡WF R
-        wait≡pool◇(Conv Kernel) R β ¤
-        ÷T ÷⧻⟜/+ ≡(-₁ ×₂ B) μ σ
-      )
-    
-    ~Sim {f T R μ σ β} ⇌[⍥⊸(U T R μ σ β)-₁f]
-  └─╴
-  
-  ┌─╴Asymptotic
-    Kernel ← Lenia~Kernel
-    # world ? T R μ σ β world
-    ~U {T R μ σ β} ↥₀↧₁ +⟜(
-        ÷T ÷⧻⟜/+ -⌞
-      | WF R ≡WF R
-        wait≡pool◇(Conv Kernel) R β ¤
-        ≡B μ σ
-      )
-    
-    ~Sim {f T R μ σ β} ⇌[⍥⊸(U T R μ σ β)-₁f]
-  └─╴
-  
-  ┌─╴MultiChannel
-    # kernel ? R ρ β
-    Kernel ← (
-      ×◡⋅⧻÷:÷⟜(⌵≡₂/ℂ-|⊞⊟.⇡+₁×₂)
-      ××⊃(>⊙⧻|⊏↧⊸⊓⌊(-₁⧻)|B 0.5 0.15 ◿₁)
-      ÷/+⊸♭
-    )
-    
-    # world ? T R μ σ β world
-    ~U {T R μ σ β ρ H C₀ C₁} ↥₀↧₁ +⟜(
-        ⊏C₀ ≡(WF R ≡WF R)
-        wait≡pool◇(Conv Kernel) R ρ β
-        ≡(-₁ ×₂ B) μ σ
-        ÷T ⊕/+C₁ ×H
-      )
-    
-    ~Sim {f T R μ σ β ρ H C₀ C₁} ⇌[⍥⊸(U T R μ σ β ρ H C₀ C₁)-₁f]
-  └─╴
-  
-  ┌─╴AsymptoticMulti
-    Kernel ← MultiChannel~Kernel
-    # world ? T R μ σ β world
-    ~U {T R μ σ β ρ H C₀ C₁} ↥₀↧₁ +⟜(
-        ⨬(-₁⋅×₂|-₁⋅×₂|-)⟜⊏C₁
-        ÷T ⊕/+C₁ ×H
-      | ⊏C₀ ≡(WF R ≡WF R)
-        wait≡pool◇(Conv Kernel) R ρ β
-        ≡B μ σ)
-    
-    ~Sim {f T R μ σ β ρ H C₀ C₁} ⇌[⍥⊸(U T R μ σ β ρ H C₀ C₁)-₁f]
-  └─╴
-└─╴
+# applies F once for each dimension
+RP! ← ⍥(⍉^0)⧻⊸△
 
-# freq ? time
-FFT ← ⌅(⍥(⍉fft)⧻⊸△|⍥°(⍉fft)⧻⊸△)
+FFT ← ⌅(RP!fft|RP!°fft)
 
-# shifted ? reg
-FFTShift ← ⍥(⍉⊂⊃↘↙⌈÷₂⊸⧻)⧻⊸△
+FFTShift ← RP!(⊂⊃↘↙⌈÷₂⊸⧻)
 
-Conv ← ×√/×⊸△ ⍜∩FFT×
-
-Real ← ◌°ℂ
+Conv ← ×√/×⊸△ ◌°ℂ ⍜∩FFT×
 
 ┌─╴Lenia
   # kernel ? R Ws β
@@ -119,7 +38,7 @@ Real ← ◌°ℂ
   # world ? T R μ σ β world
   ~U {T R μ σ β} ↥₀↧₁ +⟜(
       ⊃(R|⧻|β|¤)
-      wait≡pool◇(Real Conv Kernel)
+      wait≡pool◇(Conv Kernel)
       ÷T ÷⧻⟜/+ ≡(-₁ ×₂ B) μ σ
     )
   
@@ -134,8 +53,8 @@ Real ← ◌°ℂ
   ~U {T R μ σ β} ↥₀↧₁ +⟜(
       ÷T ÷⧻⟜/+ -⌞
     | ⊃(R|⧻|β|¤)
-      wait≡pool◇(Real Conv Kernel)
-      ≡B μ σ
+      wait≡pool◇(Conv Kernel)
+      B μ σ
     )
   
   ~Sim {f T R μ σ β} ⇌[⍥⊸(U T R μ σ β)-₁f]
@@ -152,7 +71,7 @@ Real ← ◌°ℂ
   # world ? T R μ σ β world
   ~U {T R μ σ β ρ H C₀ C₁} ↥₀↧₁ +⟜(
       ⊃(R|≡⧻|ρ|β|∘) ⊏C₀
-      wait≡pool(Real Conv ◇Kernel)
+      wait≡pool(Conv ◇Kernel)
       ≡(-₁ ×₂ B) μ σ
       ÷T ⊕/+C₁ ×H
     )
@@ -169,7 +88,7 @@ Real ← ◌°ℂ
       ⨬(-₁⋅×₂|-₁⋅×₂|-)⟜⊏C₁
       ÷T ⊕/+C₁ ×H
     | ⊃(R|≡⧻|ρ|β|∘) ⊏C₀
-      wait≡pool(Real Conv ◇Kernel)
+      wait≡pool(Conv ◇Kernel)
       ≡B μ σ)
   
   ~Sim {f T R μ σ β ρ H C₀ C₁} ⇌[⍥⊸(U T R μ σ β ρ H C₀ C₁)-₁f]
@@ -187,14 +106,55 @@ SoftMax ← ÷⤚+1ⁿ⊙e×₋₄-0.5
       ⨬(-₁⋅×₂|-₁⋅×₂|-)⟜⊏C₁
       ÷T ⊕/+C₁ ×H
     | ⊃(R|≡⧻|ρ|β|∘) ⊏C₀
-      wait≡pool(Real Conv ◇Kernel)
-      ≡B μ σ)
+      wait≡pool(Conv ◇Kernel)
+      B μ σ)
   
   ~Sim {f T R μ σ β ρ H C₀ C₁} ⇌[⍥⊸(U T R μ σ β ρ H C₀ C₁)-₁f]
 └─╴
 
-# applies colormap and upscales each frame
-# colored ? grayscale colormap
-GifReg ← wait≡⌟pool(▽⟜≡▽4 C)
-# transposes and upscales multi channel frames
-GifMC ← ≡(▽⟜≡▽4 ⍉)
+# Tacit
+┌─╴T
+  # bell ? x μ σ
+  Bell ← ⁿ⊙e¯÷⟜ⁿ2˜÷˜-
+  
+  # image radius ? factor image radius
+  Scale ← ⊓⌞(▽⟜≡▽|×)
+  
+  ┌─╴Lenia
+    # kernel ? R Ws β
+    Kernel ← memo(
+      ×◡⋅⧻÷⊙(⌵-ℂ. ÷₂⊸⧻ ⊞ℂ.⇡)
+      ×⊃(⬚0⊏⌊|Bell ⊙0.5 ⊙0.15 ◿₁)
+      FFTShift ÷/+⊸♭
+    )
+    
+    # W ? W R β μ σ T
+    U ← ↥₀↧₁ +⟜(
+      ⊃(⋅∘|⧻|⋅⋅∘|¤)
+      ≡(Conv◇Kernel)
+      ÷⊃(×⧻|/+) -₁×₂Bell
+    )
+    
+    # anim ? frames W R β μ σ T
+    Sim ← ⇌[⋅⋅⋅⋅⋅◌ ⍥⤚⊸₅U]
+  └─╴
+  
+  ┌─╴Multi
+    # R Ws ρ β
+    Kernel ← (
+      ×◡⋅⧻÷:÷⊙(⌵-ℂ. ÷₂⊸⧻ ⊞ℂ.⇡)
+      ×⊃(⬚0⊏⌊|Bell 0.5 0.15 ◿₁)
+      FFTShift ÷/+⊸♭
+    )
+    
+    # Cs ? Cs C₀ R ρ β μ σ H C₁ T
+    U ← ↥₀↧₁+⟜(
+      ⊃(⋅∘|≡⧻|⋅⋅⊙∘|∘)˜⊏
+      wait≡pool(Conv◇Kernel)
+      ÷⊙⊕/+⤚⋅: ×≡Bell
+    )
+    
+    # anim ? frames Cs C₀ R ρ β μ σ H C₁ T
+    Sim ← ⇌[⋅⋅⋅⋅⋅⋅⋅⋅⋅◌ ⍥⊃⊸₉U⍉]
+  └─╴
+└─╴
