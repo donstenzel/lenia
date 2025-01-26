@@ -22,7 +22,7 @@ live visualizations, since it's a lot more feasable now.
 # Showcase 📷
 
 ## Lenia
-This is the classic Lenia, showcasing continuous states, time and space.
+This is classic Lenia, showcasing continuous states, time and space.
 
 ![Lenia](visualizations/lenia.gif)
 

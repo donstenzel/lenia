@@ -18,6 +18,8 @@ C ← ⍜-× ⊃(⍜⊟⊏⊃⌊⌈)◿₁ ×-₁◡⋅⧻
 # bell ? μ σ x
 B ← ⁿ⊙e¯÷⟜ⁿ2÷𝄐⌞-
 
+Grid ← ⌵-ℂ. ÷₂⊸⧻ ⊞ℂ.⇡
+
 # applies F once for each dimension
 RP! ← ⍥(⍉^0)⧻⊸△
 
@@ -63,20 +65,20 @@ Conv ← ×√/×⊸△ ◌°ℂ ⍜∩FFT×
 ┌─╴Multi
   # kernel ? R Ws ρ β
   Kernel ← (
-    ×◡⋅⧻÷:÷⊙(⌵≡₂/ℂ -÷₂⊸⧻ ⊞⊟.⇡)
+    ×◡⋅⧻ ÷⊃𝄐×⋅Grid
     ××⊃(>⊙⧻|⊏↧⊸⊓⌊(-₁⧻)|B 0.5 0.15 ◿₁)
     FFTShift ÷/+⊸♭
   )
   
   # world ? T R μ σ β world
-  ~U {T R μ σ β ρ H C₀ C₁} ↥₀↧₁ +⟜(
+  ~U {T R μ σ β ρ H C₀ C₁ W} ↥₀↧₁ +⟜(
       ⊃(R|≡⧻|ρ|β|∘) ⊏C₀
       wait≡pool(Conv ◇Kernel)
-      ≡(-₁ ×₂ B) μ σ
+      -₁ ×₂ B μ σ
       ÷T ⊕/+C₁ ×H
-    )
+    ) W
   
-  ~Sim {f T R μ σ β ρ H C₀ C₁} ⇌[⍥⊸(U T R μ σ β ρ H C₀ C₁)-₁f]
+  ~Sim {f T R μ σ β ρ H C₀ C₁ W} ⇌[⍥⊸(U T R μ σ β ρ H C₀ C₁)-₁f W]
 └─╴
 
 ┌─╴AMC
@@ -113,7 +115,7 @@ SoftMax ← ÷⤚+1ⁿ⊙e×₋₄-0.5
 └─╴
 
 # Tacit
-┌─╴T
+┌─╴Tacit
   # bell ? x μ σ
   Bell ← ⁿ⊙e¯÷⟜ⁿ2˜÷˜-
   
@@ -123,7 +125,7 @@ SoftMax ← ÷⤚+1ⁿ⊙e×₋₄-0.5
   ┌─╴Lenia
     # kernel ? R Ws β
     Kernel ← memo(
-      ×◡⋅⧻÷⊙(⌵-ℂ. ÷₂⊸⧻ ⊞ℂ.⇡)
+      ×◡⋅⧻ ÷⊙Grid
       ×⊃(⬚0⊏⌊|Bell ⊙0.5 ⊙0.15 ◿₁)
       FFTShift ÷/+⊸♭
     )
@@ -136,25 +138,25 @@ SoftMax ← ÷⤚+1ⁿ⊙e×₋₄-0.5
     )
     
     # anim ? frames W R β μ σ T
-    Sim ← ⇌[⋅⋅⋅⋅⋅◌ ⍥⤚⊸₅U]
+    Sim ← ⇌[∩₆◌ ⍥⤚⊸₅U]
   └─╴
   
   ┌─╴Multi
-    # R Ws ρ β
-    Kernel ← (
-      ×◡⋅⧻÷:÷⊙(⌵-ℂ. ÷₂⊸⧻ ⊞ℂ.⇡)
-      ×⊃(⬚0⊏⌊|Bell 0.5 0.15 ◿₁)
+    # Ws R ρ β
+    Kernel ← memo(
+      ×◡⋅⧻ ÷⊃⋅×Grid
+      ×⊃(⬚0⊏⌊|Bell ⊙0.5 ⊙0.15 ◿₁)
       FFTShift ÷/+⊸♭
     )
     
     # Cs ? Cs C₀ R ρ β μ σ H C₁ T
-    U ← ↥₀↧₁+⟜(
-      ⊃(⋅∘|≡⧻|⋅⋅⊙∘|∘)˜⊏
-      wait≡pool(Conv◇Kernel)
-      ÷⊙⊕/+⤚⋅: ×≡Bell
+    U ← ↥₀↧₁ +⟜(
+      ⧻⤚⊓⊢⊙⊙∘˜⊏
+      ≡(Conv◇Kernel)
+      ˜÷˜⊕/+×-₁×₂Bell
     )
     
     # anim ? frames Cs C₀ R ρ β μ σ H C₁ T
-    Sim ← ⇌[⋅⋅⋅⋅⋅⋅⋅⋅⋅◌ ⍥⊃⊸₉U⍉]
+    Sim ← ⇌[∩₁₀◌ ⍥⊃⊸₉U⍉]
   └─╴
 └─╴
