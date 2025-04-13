@@ -1,7 +1,7 @@
 # Experimental!
 L ~ "lenia"
 C ~ "creatures"
-R ~ "../raylib/lib"
+R ~ "git: https://github.com/donstenzel/raylib-uiua"
   W  ← R~Window
   Kb ← R~Keyboard
 
