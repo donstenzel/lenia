@@ -17,8 +17,10 @@ W X Y "Rayua Lenia"
 °W~FPS 30
 Kb~Exit @q
 
-gen ÷8X_Y 3 10 1 0.15 0.015 5
-◌ W~Loop!(
-  ⊃(▽⟜≡▽8 L~C ⊙L~Viridis|L~Tacit~Lenia~U)
+# ▽⟜≡▽2 gen ÷8X_Y ⚂ 20 1 0.15 0.015 5
+L~Scale 4 C~Pad 22_22 C~Orbium
+
+◌ W~Loop!L!(
+  ⊃(▽⟜≡▽4 C Viridis|Single~U)
   R~ShowArray
 )

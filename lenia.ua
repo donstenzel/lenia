@@ -12,151 +12,92 @@ Plasma ← ÷₂₅₅[[12 8 135]
               [204 71 120]
               [240 249 33]]
 
-# colored ? grayscale colormap
-C ← ⍜-× ⊃(⍜⊟⊏⊃⌊⌈)◿₁ ×-₁◡⋅⧻
+# Colors a grayscale image using a segmented
+# colormap, which should be an array of colors.
+# Check out `Viridis` for an example.
+# colored ? colormap grayscale
+C ← ⍜-× ⊃(⍜⊟⊏⊃⌊⌈)◿₁ ×-₁⤚⊓⧻∘
 
-# bell ? μ σ x
-B ← ⁿ⊙e¯÷⟜ⁿ2÷𝄐⌞-
+Grid  ← ⌵˙⊞ℂ-⊃÷₂⇡
+Shift ← ↻⌈÷₂⊸△
+Conv  ← ×√/×⊸△ ◌°ℂ ⍜∩fft×
 
-Grid ← ⌵-ℂ. ÷₂⊸⧻ ⊞ℂ.⇡
+# bell ? x μ σ
+Bell ← ⁿ⊙e¯÷⟜ⁿ2˜÷˜-
 
-# applies F once for each dimension
-RP! ← ⍥(⍉^0)⧻⊸△
+# image radius ? factor image radius
+Scale ← ⊓⌞(▽⟜≡▽|×)
 
-FFT ← ⌅(RP!fft|RP!°fft)
-
-FFTShift ← RP!(⊂⊃↘↙⌈÷₂⊸⧻)
-
-Conv ← ×√/×⊸△ ◌°ℂ ⍜∩FFT×
-
-┌─╴Lenia
+# The single channel version is only black & white
+# so you can use C to color it with any segmented
+# colormap like Viridis. States, space and time
+# are continuous.
+┌─╴Single
   # kernel ? R Ws β
-  Kernel ← (
-    ×◡⋅⧻÷⊙(⌵≡₂/ℂ -÷₂⊸⧻ ⊞⊟.⇡)
-    ××⊃(>⊙⧻|⊏↧⊸⊓⌊(-₁⧻)|B 0.5 0.15 ◿₁)
-    FFTShift ÷/+⊸♭
+  Kernel ← memo(
+    ×◡⋅⧻ ÷⊙Grid
+    ×⊃(⬚0⊏⌊|Bell ⊙0.5 ⊙0.15 ◿₁)
+    Shift ÷/+⊸♭
   )
-  
-  # world ? T R μ σ β world
-  ~U {T R μ σ β} ↥₀↧₁ +⟜(
-      ⊃(R|⧻|β|¤)
-      wait≡pool◇(Conv Kernel)
-      ÷T ÷⧻⟜/+ ≡(-₁ ×₂ B) μ σ
-    )
-  
-  ~Sim {f T R μ σ β} ⇌[⍥⊸(U T R μ σ β)-₁f]
+
+  # The parameters are as follows:
+  #  - W ← the world state (must be a square grid)
+  #  - T ← time scale
+  #  - R ← kernel radius
+  #  - β ← kernel peaks
+  #  - μ, σ ← growth center & -width
+  # W ? W R β μ σ T
+  U ← ↥₀↧₁ +⟜(
+    ⊃⤙⊓⧻◌𝄐˜⊙¤
+    ≡(Conv◇Kernel)
+    ÷⊃(×⧻|/+) -₁×₂Bell
+  )
+
+  # The parameters are as follows:
+  #  - W ← the world state (must be a square grid)
+  #  - T ← time scale
+  #  - R ← kernel radius
+  #  - β ← kernel peaks
+  #  - μ, σ ← growth center & -width
+  # anim ? frames W R β μ σ T
+  Sim ← ⍥⤚⊸₅U
 └─╴
 
-┌─╴Asymptotic
-  # kernel ? R Ws β
-  Kernel ← Lenia~Kernel
-  
-  # world ? T R μ σ β world
-  ~U {T R μ σ β} ↥₀↧₁ +⟜(
-      ÷T ÷⧻⟜/+ -⌞
-    | ⊃(R|⧻|β|¤)
-      wait≡pool◇(Conv Kernel)
-      B μ σ
-    )
-  
-  ~Sim {f T R μ σ β} ⇌[⍥⊸(U T R μ σ β)-₁f]
-└─╴
-
+# In the multi channel version, the output is
+# inherently colored.
 ┌─╴Multi
-  # kernel ? R Ws ρ β
-  Kernel ← (
-    ×◡⋅⧻ ÷⊃𝄐×⋅Grid
-    ××⊃(>⊙⧻|⊏↧⊸⊓⌊(-₁⧻)|B 0.5 0.15 ◿₁)
-    FFTShift ÷/+⊸♭
+  # Ws R ρ β
+  Kernel ← memo(
+    ×◡⋅⧻ ÷⊃⋅×Grid
+    ×⊃(⬚0⊏⌊|Bell ⊙0.5 ⊙0.15 ◿₁)
+    Shift ÷/+⊸♭
   )
-  
-  # world ? T R μ σ β world
-  ~U {T R μ σ β ρ H C₀ C₁ W} ↥₀↧₁ +⟜(
-      ⊃(R|≡⧻|ρ|β|∘) ⊏C₀
-      wait≡pool(Conv ◇Kernel)
-      -₁ ×₂ B μ σ
-      ÷T ⊕/+C₁ ×H
-    ) W
-  
-  ~Sim {f T R μ σ β ρ H C₀ C₁ W} ⇌[⍥⊸(U T R μ σ β ρ H C₀ C₁)-₁f W]
-└─╴
 
-┌─╴AMC
-  # kernel ? R Ws ρ β
-  Kernel ← Multi~Kernel
-  
-  # world ? T R μ σ β world
-  ~U {T R μ σ β ρ H C₀ C₁} ↥₀↧₁ +⟜(
-      ⨬(-₁⋅×₂|-₁⋅×₂|-)⟜⊏C₁
-      ÷T ⊕/+C₁ ×H
-    | ⊃(R|≡⧻|ρ|β|∘) ⊏C₀
-      wait≡pool(Conv ◇Kernel)
-      ≡B μ σ)
-  
-  ~Sim {f T R μ σ β ρ H C₀ C₁} ⇌[⍥⊸(U T R μ σ β ρ H C₀ C₁)-₁f]
-└─╴
+  # The parameters are as follows:
+  #  - Cs ← channels = current state
+  #  - C₀ ← input channel indeces
+  #  - T ← time scale
+  #  - R ← kernel radius
+  #  - ρ ← relative kernel radius
+  #  - β ← kernel peaks
+  #  - μ, σ, H ← growth centers, -widths & -heights
+  #  - C₁ ← output channel indeces
+  # Cs ? Cs C₀ R ρ β μ σ H C₁ T
+  U ← ↥₀↧₁ +⟜(
+    ⧻⤚⊓⊢⊙⊙∘˜⊏
+    ≡(Conv◇Kernel)
+    ˜÷˜⊕/+×-₁×₂Bell
+  )
 
-# σ ? x
-SoftMax ← ÷⤚+1ⁿ⊙e×₋₄-0.5
-
-┌─╴SoftMaxAMC
-  # kernel ? R Ws ρ β
-  Kernel ← Multi~Kernel
-  
-  # world ? T R μ σ β world
-  ~U {T R μ σ β ρ H C₀ C₁} SoftMax +⟜(
-      ⨬(-₁⋅×₂|-₁⋅×₂|-)⟜⊏C₁
-      ÷T ⊕/+C₁ ×H
-    | ⊃(R|≡⧻|ρ|β|∘) ⊏C₀
-      wait≡pool(Conv ◇Kernel)
-      B μ σ)
-  
-  ~Sim {f T R μ σ β ρ H C₀ C₁} ⇌[⍥⊸(U T R μ σ β ρ H C₀ C₁)-₁f]
-└─╴
-
-# Tacit
-┌─╴Tacit
-  # bell ? x μ σ
-  Bell ← ⁿ⊙e¯÷⟜ⁿ2˜÷˜-
-  
-  # image radius ? factor image radius
-  Scale ← ⊓⌞(▽⟜≡▽|×)
-  
-  ┌─╴Lenia
-    # kernel ? R Ws β
-    Kernel ← memo(
-      ×◡⋅⧻ ÷⊙Grid
-      ×⊃(⬚0⊏⌊|Bell ⊙0.5 ⊙0.15 ◿₁)
-      FFTShift ÷/+⊸♭
-    )
-    
-    # W ? W R β μ σ T
-    U ← ↥₀↧₁ +⟜(
-      ⊃(⋅∘|⧻|⋅⋅∘|¤)
-      ≡(Conv◇Kernel)
-      ÷⊃(×⧻|/+) -₁×₂Bell
-    )
-    
-    # anim ? frames W R β μ σ T
-    Sim ← ⇌[∩₆◌ ⍥⤚⊸₅U]
-  └─╴
-  
-  ┌─╴Multi
-    # Ws R ρ β
-    Kernel ← memo(
-      ×◡⋅⧻ ÷⊃⋅×Grid
-      ×⊃(⬚0⊏⌊|Bell ⊙0.5 ⊙0.15 ◿₁)
-      FFTShift ÷/+⊸♭
-    )
-    
-    # Cs ? Cs C₀ R ρ β μ σ H C₁ T
-    U ← ↥₀↧₁ +⟜(
-      ⧻⤚⊓⊢⊙⊙∘˜⊏
-      ≡(Conv◇Kernel)
-      ˜÷˜⊕/+×-₁×₂Bell
-    )
-    
-    # anim ? frames Cs C₀ R ρ β μ σ H C₁ T
-    Sim ← ⇌[∩₁₀◌ ⍥⊃⊸₉U⍉]
-  └─╴
+  # The parameters are as follows:
+  #  - Cs ← channels = current state
+  #  - C₀ ← input channel indeces
+  #  - T ← time scale
+  #  - R ← kernel radius
+  #  - ρ ← relative kernel radius
+  #  - β ← kernel peaks
+  #  - μ, σ, H ← growth centers, -widths & -heights
+  #  - C₁ ← output channel indeces
+  # anim ? frames Cs C₀ R ρ β μ σ H C₁ T
+  Sim ← ⍥⊃⊸₉U⍉
 └─╴
