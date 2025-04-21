@@ -1,5 +1,9 @@
 # Experimental!
 
+# This file contains links to 2 other modules:
+#  - Lenia: functions for simulations
+#  - Creatures: a couple of presets
+
 # Contains modules `Single` and `Multi` for
 # Lenia simulations, for the respective number
 # of channels. Each module contains functions
