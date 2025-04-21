@@ -9,15 +9,30 @@ reading on Lenia. This page also served as my main source of information.
 You can find a jupyter notebook called "From Conway to Lenia" on there,
 which was great to follow along.
 
-~~Unfortunately, this implementation is not very fast. There is some
-optimization involving Fourier Transformation and regular multiplication
-instead of convolution, but I have never used FT before so it's going
-to take a while until I understand it enough.~~
+The example uses [raylib](https://github.com/donstenzel/raylib-uiua) to
+render the simulation as it happens, thus allowing much longer and bigger ones.
+The performance gets worse as the world gets bigger and at some point won't
+be able keep up, but from testing sizes up to 500x500 work pretty well.
 
-I've implemented the fast fourier transform convolution, which is an
-immense upgrade. For reference, my biggest render before took 82 minutes.
-With FFT it only takes ~75s! Maybe I will look into rayua to create some
-live visualizations, since it's a lot more feasable now.
+## Pad
+
+You can import the repo in the pad to use creatures and functions.
+```uiua
+# Experimental!
+~ "git: https://github.com/donstenzel/lenia"
+  ~ Creatures Lenia
+
+# New orbium, pad for space
+Creatures!(Pad 22_22 Orbium)
+
+# Simulate 100 frames, color with Viridis
+Lenia!(C Viridis Single~Sim 100)
+
+# Upscale
+≡(▽⟜≡▽)4
+```
+This shows 100 frames of Orbium casually gliding.
+[[Pad link]](https://uiua.org/pad?src=0_16_0-dev_1__IyBFeHBlcmltZW50YWwhCn4gImdpdDogaHR0cHM6Ly9naXRodWIuY29tL2RvbnN0ZW56ZWwvbGVuaWEiCiAgfiBDcmVhdHVyZXMgTGVuaWEKCiMgTmV3IG9yYml1bSwgcGFkIGZvciBzcGFjZQpDcmVhdHVyZXMhKFBhZCAyMl8yMiBPcmJpdW0pCgojIFNpbXVsYXRlIDEwMCBmcmFtZXMsIGNvbG9yIHdpdGggVmlyaWRpcwpMZW5pYSEoQyBWaXJpZGlzIFNpbmdsZX5TaW0gMTAwKQoKIyBVcHNjYWxlCuKJoSjilr3in5ziiaHilr0pNAo=)
 
 # Showcase 📷
 
